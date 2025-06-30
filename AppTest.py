@@ -19,7 +19,7 @@ if st.button("Salvar"):
         try:
             # Autenticação com Google Sheets usando secrets
             scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-            gcp_info = json.loads(st.secrets["gcp_key"])  # ← Usa o secret
+            gcp_info = st.secrets["gcp_key"]  # ← corrigido
             creds = ServiceAccountCredentials.from_json_keyfile_dict(gcp_info, scope)
             client = gspread.authorize(creds)
 
