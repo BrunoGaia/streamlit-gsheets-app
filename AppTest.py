@@ -9,7 +9,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import json
 
-st.set_page_config(page_title="UNIP - Cadastro e Simulador de Notas", layout="wide")
+st.set_page_config(page_title="UNIP - Simulador de Notas - Bruno Gaia", layout="wide")
 
 if "etapa" not in st.session_state:
     st.session_state.etapa = "cadastro"
@@ -17,12 +17,12 @@ if "etapa" not in st.session_state:
 if "notas_salvas" not in st.session_state:
     st.session_state.notas_salvas = {}
 
-menu = st.sidebar.radio("Escolha uma aba:", ["📥 Cadastrar Notas", "🧮 Simular Média"])
+menu = st.sidebar.radio("Escolha uma aba:", ["📥 Inserir Notas", "🧮 Simular Média"])
 
 # ---------------------------
 # ABA 1: CADASTRO
 # ---------------------------
-if menu == "📥 Cadastrar Notas":
+if menu == "📥 Inserir Notas":
     st.title("📥 Cadastro de Notas - Medicina UNIP")
 
     nome = st.text_input("Nome:")
@@ -50,7 +50,7 @@ if menu == "📥 Cadastrar Notas":
                 data_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 linha = [data_hora, nome, turma, notas["Tutoria"], notas["Teórica"], notas["Prática"], notas["AEP"]]
                 worksheet.append_row(linha)
-                st.success("✅ Notas salvas com sucesso! Agora vá para a aba \"Simular Média\" para continuar.")
+                st.success("✅ Notas inseridas com sucesso! Agora vá para a aba \"Simular Média\" para continuar.")
                 st.session_state.etapa = "simulador"
                 st.session_state.notas_salvas = notas
             except Exception as e:
