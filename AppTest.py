@@ -10,19 +10,19 @@ from datetime import datetime
 import json
 import requests
 
-# Enviar mensagem no WhatsApp
 def enviar_whatsapp(nome):
     try:
         payload = {
-            "phone": st.secrets["+5511956007770"],
+            "phone": st.secrets["telefone_destino"],
             "message": f"📩 {nome} acabou de registrar as notas no app da UNIP!"
         }
-        url = st.secrets["https://api.z-api.io/instances/3E383630FEE020A6AA2482E7EA6BFAB8/token/F33C05CBAD42BB180092E123/send-text"]
+        url = st.secrets["whatsapp_api_url"]
         response = requests.post(url, json=payload)
         if response.status_code == 200:
             st.toast("✅ Notificação enviada via WhatsApp.")
         else:
             st.warning("⚠️ Falha ao enviar WhatsApp.")
+            st.text(f"Código de status: {response.status_code}")
     except Exception as e:
         st.warning("⚠️ Erro ao enviar WhatsApp.")
         st.text(str(e))
