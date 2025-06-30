@@ -63,8 +63,9 @@ if menu == "📥 Cadastrar Notas":
                 df_hoje = df_hoje[(df_hoje[['Tutoria', 'Teórica', 'Prática', 'AEP']] != 0).any(axis=1)]
 
                 if not df_hoje.empty:
-                    media_hoje = df_hoje[['Tutoria', 'Teórica', 'Prática', 'AEP']].replace(0, np.nan).mean().mean()
-                    st.info(f"📊 Média geral das notas de hoje (ignorando zeros): **{media_hoje:.2f}**")
+                    medias_colunas = df_hoje[['Tutoria', 'Teórica', 'Prática', 'AEP']].replace(0, np.nan).mean()
+                    for col, valor in medias_colunas.items():
+                        st.info(f"📌 Média de {col} hoje (ignorando zeros): **{valor:.2f}**")
                     st.info(f"👥 Número de usuários que preencheram hoje: **{df_hoje.shape[0]}**")
 
             except Exception as e:
