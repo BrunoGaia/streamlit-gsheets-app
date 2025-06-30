@@ -23,7 +23,7 @@ menu = st.sidebar.radio("Escolha uma aba:", ["📥 Inserir Notas", "🧮 Simular
 # ABA 1: CADASTRO
 # ---------------------------
 if menu == "📥 Inserir Notas":
-    st.title("📥 Cadastro de Notas - Medicina UNIP")
+    st.title("📥 Notas - Medicina UNIP")
 
     nome = st.text_input("Nome:")
     turma = st.selectbox("Turma:", ["T1", "T2", "T3", "T4"])
