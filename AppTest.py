@@ -8,7 +8,24 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import json
+import requests
 
+# Enviar mensagem no WhatsApp
+def enviar_whatsapp(nome):
+    try:
+        payload = {
+            "phone": st.secrets["telefone_destino"],
+            "message": f"📩 {nome} acabou de registrar as notas no app da UNIP!"
+        }
+        url = st.secrets["whatsapp_api_url"]
+        response = requests.post(url, json=payload)
+        if response.status_code == 200:
+            st.toast("✅ Notificação enviada via WhatsApp.")
+        else:
+            st.warning("⚠️ Falha ao enviar WhatsApp.")
+    except Exception as e:
+        st.warning("⚠️ Erro ao enviar WhatsApp.")
+        st.text(str(e))
 st.set_page_config(page_title="UNIP - Cadastro e Simulador de Notas", layout="wide")
 
 if "etapa" not in st.session_state:
