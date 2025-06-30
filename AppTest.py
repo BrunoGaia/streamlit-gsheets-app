@@ -30,13 +30,15 @@ if menu == "📥 Cadastrar Notas":
     notas = {}
     pesos = {"Tutoria": 3, "Teórica": 3, "Prática": 2, "AEP": 2}
 
-    st.markdown("### 📝 Digite suas 4 notas (pode usar 0 para as que ainda não foram feitas):")
+    st.markdown("### 📝 Digite suas 4 notas (deixe duas como 0 se ainda não tiver):")
     for key in pesos:
         notas[key] = st.number_input(f"{key} (peso {pesos[key]})", min_value=0.0, max_value=10.0, step=0.1, key=key+"_cad")
 
     if st.button("Próximo Passo"):
-        if nome.strip() == "" or any(n is None for n in notas.values()):
-            st.warning("⚠️ Preencha o nome e todas as notas.")
+        if nome.strip() == "":
+            st.warning("⚠️ Preencha o nome.")
+        elif list(notas.values()).count(0.0) != 2:
+            st.warning("⚠️ Deixe exatamente 2 notas com 0.0 para continuar.")
         else:
             try:
                 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
