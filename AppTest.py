@@ -14,6 +14,9 @@ st.set_page_config(page_title="UNIP - Cadastro e Simulador de Notas", layout="wi
 if "etapa" not in st.session_state:
     st.session_state.etapa = "cadastro"
 
+if "notas_salvas" not in st.session_state:
+    st.session_state.notas_salvas = {}
+
 menu = st.sidebar.radio("Escolha uma aba:", ["📥 Cadastrar Notas", "🧮 Simular Média"])
 
 # ---------------------------
@@ -29,7 +32,7 @@ if menu == "📥 Cadastrar Notas":
 
     st.markdown("### 📝 Digite suas 4 notas (pode usar 0 para as que ainda não foram feitas):")
     for key in pesos:
-        notas[key] = st.number_input(f"{key} (peso {pesos[key]})", min_value=0.0, max_value=10.0, step=0.1)
+        notas[key] = st.number_input(f"{key} (peso {pesos[key]})", min_value=0.0, max_value=10.0, step=0.1, key=key+"_cad")
 
     if st.button("Próximo Passo"):
         if nome.strip() == "" or any(n is None for n in notas.values()):
@@ -47,6 +50,7 @@ if menu == "📥 Cadastrar Notas":
                 worksheet.append_row(linha)
                 st.success("✅ Notas salvas com sucesso! Agora vá para a aba \"Simular Média\" para continuar.")
                 st.session_state.etapa = "simulador"
+                st.session_state.notas_salvas = notas
             except Exception as e:
                 st.error("❌ Erro ao salvar. Verifique a planilha e as credenciais.")
                 st.text(str(e))
@@ -55,25 +59,21 @@ if menu == "📥 Cadastrar Notas":
 # ABA 2: SIMULADOR
 # ---------------------------
 elif menu == "🧮 Simular Média":
-    if st.session_state.etapa != "simulador":
+    if st.session_state.etapa != "simulador" or not st.session_state.notas_salvas:
         st.warning("⚠️ Preencha e salve as notas na aba \"Cadastrar Notas\" antes de acessar o simulador.")
     else:
         st.title("🧮 Simulador de Média - Medicina UNIP")
 
         pesos = {"Tutoria": 3, "Teórica": 3, "Prática": 2, "AEP": 2}
-
-        st.markdown("### 📝 Digite novamente as 4 notas (duas podem ser 0 para simular):")
-        notas = {}
-        for nome in pesos:
-            notas[nome] = st.number_input(f"{nome} (peso {pesos[nome]})", min_value=0.0, max_value=10.0, step=0.1, key=nome)
+        notas = st.session_state.notas_salvas.copy()
 
         pendentes = [k for k in notas if notas[k] == 0.0]
 
         if len(pendentes) != 2:
             st.warning("⚠️ Deixe exatamente **2 avaliações com nota 0** para ativar o cálculo.")
         else:
-            slider_nome = "Tutoria" if "Tutoria" in pendentes else pendentes[0]
-            calculada_nome = [n for n in pendentes if n != slider_nome][0]
+            slider_nome = pendentes[0]
+            calculada_nome = pendentes[1]
 
             st.markdown(f"### 🎚️ Controle a nota de **{slider_nome}**:")
             slider_valor = st.slider(f"Nota para {slider_nome}", 5.0, 10.0, 10.0, 0.1)
@@ -123,6 +123,13 @@ elif menu == "🧮 Simular Média":
                     ax.grid(True, which='minor', linestyle=':', linewidth=0.5)
                     ax.set_xlabel(slider_nome)
                     ax.set_ylabel(calculada_nome)
+                    ax.set_title("🔵 Combinações para média 6.7")
+                    st.pyplot(fig)
+                else:
+                    st.error("❌ Nenhuma combinação encontrada para essa simulação.")
+
+st.markdown("---")
+st.caption("Desenvolvido por Bruno Gaia · Medicina UNIP · 2025")
                     ax.set_title("🔵 Combinações para média 6.7")
                     st.pyplot(fig)
                 else:
