@@ -8,9 +8,8 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import json
-import os
 
-st.set_page_config(page_title="UNIP - Simulador de Notas", layout="wide")
+st.set_page_config(page_title="UNIP - Cadastro e Simulador de Notas", layout="wide")
 
 if "etapa" not in st.session_state:
     st.session_state.etapa = "cadastro"
@@ -19,21 +18,6 @@ if "notas_salvas" not in st.session_state:
     st.session_state.notas_salvas = {}
 
 menu = st.sidebar.radio("Escolha uma aba:", ["📥 Cadastrar Notas", "🧮 Simular Média"])
-
-# ---------------------------
-# Função para autenticar com o Google Sheets usando o arquivo JSON local
-# ---------------------------
-def autenticar_google():
-    try:
-        caminho_arquivo = os.path.join(os.getcwd(), "calcunip-7ca1152065d4.json")
-        scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-        creds = ServiceAccountCredentials.from_json_keyfile_name(caminho_arquivo, scope)
-        client = gspread.authorize(creds)
-        return client
-    except Exception as e:
-        st.error("Erro na autenticação com o Google Sheets.")
-        st.text(str(e))
-        return None
 
 # ---------------------------
 # ABA 1: CADASTRO
@@ -57,9 +41,10 @@ if menu == "📥 Cadastrar Notas":
             st.warning("⚠️ Deixe exatamente 2 notas com 0.0 para continuar.")
         else:
             try:
-                client = autenticar_google()
-                if client is None:
-                    st.stop()
+                scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+                gcp_info = st.secrets["gcp_key"]
+                creds = ServiceAccountCredentials.from_json_keyfile_dict(gcp_info, scope)
+                client = gspread.authorize(creds)
                 sheet = client.open_by_key("1xK8B8cKWgmt8E2H6QlnASR336ZkTGsVAXX0_Kj9qB0A")
                 worksheet = sheet.sheet1
                 data_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
