@@ -130,10 +130,3 @@ elif menu == "🧮 Simular Média":
 
 st.markdown("---")
 st.caption("Desenvolvido por Bruno Gaia · Medicina UNIP · 2025")
-                    ax.set_title("🔵 Combinações para média 6.7")
-                    st.pyplot(fig)
-                else:
-                    st.error("❌ Nenhuma combinação encontrada para essa simulação.")
-
-st.markdown("---")
-st.caption("Desenvolvido por Bruno Gaia · Medicina UNIP · 2025")
