@@ -14,10 +14,10 @@ import requests
 def enviar_whatsapp(nome):
     try:
         payload = {
-            "phone": st.secrets["telefone_destino"],
+            "phone": st.secrets["+5511956007770"],
             "message": f"📩 {nome} acabou de registrar as notas no app da UNIP!"
         }
-        url = st.secrets["whatsapp_api_url"]
+        url = st.secrets["https://api.z-api.io/instances/3E383630FEE020A6AA2482E7EA6BFAB8/token/F33C05CBAD42BB180092E123/send-text"]
         response = requests.post(url, json=payload)
         if response.status_code == 200:
             st.toast("✅ Notificação enviada via WhatsApp.")
