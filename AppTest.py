@@ -86,8 +86,8 @@ elif menu == "🧮 Simular Média":
                         combinacoes.append({pendentes[0]: x, pendentes[1]: y})
 
             if combinacoes:
-                df_combos = pd.DataFrame(combinacoes).drop_duplicates().sort_values(by=pendentes[0], ascending=False).head(30)
-                st.markdown("### 🧮 Primeiras 30 combinações possíveis:")
+                df_combos = pd.DataFrame(combinacoes).drop_duplicates().sort_values(by=pendentes[0], ascending=False)
+                st.markdown(f"### 🧮 Todas as {len(df_combos)} combinações possíveis:")
                 st.dataframe(df_combos, use_container_width=True)
 
                 x_vals = [c[pendentes[0]] for c in combinacoes]
