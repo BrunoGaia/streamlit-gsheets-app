@@ -9,7 +9,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import json
 
-st.set_page_config(page_title="UNIP - Simulador de Notas - Bruno Gaia", layout="wide")
+st.set_page_config(page_title="UNIP - Cadastro e Simulador de Notas", layout="wide")
 
 if "etapa" not in st.session_state:
     st.session_state.etapa = "cadastro"
@@ -17,13 +17,13 @@ if "etapa" not in st.session_state:
 if "notas_salvas" not in st.session_state:
     st.session_state.notas_salvas = {}
 
-menu = st.sidebar.radio("Escolha uma aba:", ["📥 Inserir Notas", "🧮 Simular Média"])
+menu = st.sidebar.radio("Escolha uma aba:", ["📥 Cadastrar Notas", "🧮 Simular Média"])
 
 # ---------------------------
 # ABA 1: CADASTRO
 # ---------------------------
-if menu == "📥 Inserir Notas":
-    st.title("📥 Notas - Medicina UNIP")
+if menu == "📥 Cadastrar Notas":
+    st.title("📥 Cadastro de Notas - Medicina UNIP")
 
     nome = st.text_input("Nome:")
     turma = st.selectbox("Turma:", ["T1", "T2", "T3", "T4"])
@@ -50,9 +50,23 @@ if menu == "📥 Inserir Notas":
                 data_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 linha = [data_hora, nome, turma, notas["Tutoria"], notas["Teórica"], notas["Prática"], notas["AEP"]]
                 worksheet.append_row(linha)
-                st.success("✅ Notas inseridas com sucesso! Agora vá para a aba \"Simular Média\" para continuar.")
+                st.success("✅ Notas salvas com sucesso! Agora vá para a aba \"Simular Média\" para continuar.")
                 st.session_state.etapa = "simulador"
                 st.session_state.notas_salvas = notas
+
+                # Média do último dia
+                records = worksheet.get_all_records()
+                df = pd.DataFrame(records)
+                df['Data'] = pd.to_datetime(df['Data/Hora']).dt.date
+                hoje = datetime.now().date()
+                df_hoje = df[df['Data'] == hoje].copy()
+                df_hoje = df_hoje[(df_hoje[['Tutoria', 'Teórica', 'Prática', 'AEP']] != 0).any(axis=1)]
+
+                if not df_hoje.empty:
+                    media_hoje = df_hoje[['Tutoria', 'Teórica', 'Prática', 'AEP']].replace(0, np.NaN).mean().mean()
+                    st.info(f"📊 Média geral das notas de hoje (ignorando zeros): **{media_hoje:.2f}**")
+                    st.info(f"👥 Número de usuários que preencheram hoje: **{df_hoje.shape[0]}**")
+
             except Exception as e:
                 st.error("❌ Erro ao salvar. Verifique a planilha e as credenciais.")
                 st.text(str(e))
