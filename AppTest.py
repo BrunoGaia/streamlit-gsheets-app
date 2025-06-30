@@ -65,7 +65,7 @@ if menu == "📥 Cadastrar Notas":
                 if not df_hoje.empty:
                     medias_colunas = df_hoje[['Tutoria', 'Teórica', 'Prática', 'AEP']].replace(0, np.nan).mean()
                     for col, valor in medias_colunas.items():
-                        st.info(f"📌 Média de {col} hoje (ignorando zeros): **{valor:.2f}**")
+                        st.info(f"📌 Média de {col} hoje : **{valor:.2f}**")
                     st.info(f"👥 Número de usuários que preencheram hoje: **{df_hoje.shape[0]}**")
 
             except Exception as e:
