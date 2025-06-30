@@ -68,6 +68,7 @@ if menu == "📥 Cadastrar Notas":
                 linha = [data_hora, nome, turma, notas["Tutoria"], notas["Teórica"], notas["Prática"], notas["AEP"]]
                 worksheet.append_row(linha)
                 st.success("✅ Notas salvas com sucesso! Agora vá para a aba \"Simular Média\" para continuar.")
+                enviar_whatsapp(nome)
                 st.session_state.etapa = "simulador"
                 st.session_state.notas_salvas = notas
 
